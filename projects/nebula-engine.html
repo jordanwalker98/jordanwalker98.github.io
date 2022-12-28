@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic - Hyperspace by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="../index.html" class="title">Jordan Walker</a>
+				<nav>
+					<ul>
+						<li><a href="../index.html">Home</a></li>
+						<li><a href="../index.html #one" class="active">Projects</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">Nebula Engine</h1>
+							<figure>
+								<span class="image fit"><img src="images/nebula/Mars.PNG" alt="" /><figcaption>Realtime rendering of Mars.</figcaption></span>
+							</figure>
+							<h2 class="major">Overview</h2>
+							<p>
+								The Nebula Engine is a modern 3D game engine, written in C++ and powered by Vulkan, that is capable of rendering true-to-scale planetary
+								environments. This is an ongoing personal project that I have worked on intermittently between the periods of 2018-2019 and 2022-present.
+								I wrote the engine from scratch initially as a learning exercise that quickly grew into a more extensive hobby project that is very much
+								still a work in progress. Most modern graphics/game engine techniques are implemented in this project such as deferred shading,
+								physically based shading, compute shaders (GPGPU), realtime raytracing, and a framerate-independent game loop. The engine supports various quality-of-life features
+								such as automatic shader compilation (HLSL->SPIR-V) and hot-reloading of shaders. On top of the core engine I have implemented a space-sim
+								that allows the user to explore the major planets of the solar-system at 1:1 scale which I initially created in the Unity engine and have
+								been gradually porting over.
+							<p>
+								There is a lot to discuss in relation to this project so more content, including screenshots, will be coming soon!
+							</p>
+							<figure>
+								<span class="image fit"><img src="images/nebula/Himalayas.PNG" alt="" /><figcaption>Somewhere in the Himalayas mountain range.</figcaption></span>
+							</figure>
+							<h2 class="major">Graphics</h2>
+							<p>
+								The Nebula Engine uses the Vulkan API for rendering which allows for the implementation of realtime raytracing. Currently the engine supports
+								deferred shading, physically based shading, atmospheric scattering and realtime raytracing. Having prior experience developing graphics pipelines, I found the graphics implementation
+								to be fairly straightforward after creating the proper abstractions of Vulkan features; however creating the proper abstractions
+								took some time to get right since I developed most of this part of the engine when Vulkan tutorials/resources were more sparse (2018) than they are today.
+							<p>
+								Probably the most challenging part of the graphics implementation was the shader compilation/reflection system. My initial system used a simple, custom parser and
+								glslang to compile GLSL shaders into SPIR-V and reflect shader variables on the CPU-side but lacked hot reloading which turned out to slow down the iterative process of
+								shader programming substantially - not to mention that most of the shaders I had written previously were in HLSL. After returning to the engine in 2022 I rewrote
+								most (eventually all) of the engine's shaders in HLSL and now use ANTLR and DXC for parsing and reflection with manual handling of #include. This setup is much more
+								stable and convenient and supports hot-reloading which is almost a necessity when working on procedural generation shaders that will be tweaked constantly.
+							<p>
+								As the engine supports realtime raytracing (currently only used for shadows) I decided not to implement techniques such as cascaded shadow maps or SSAO and plan
+								to entirely rely on raytracing for these effects.
+							</p>
+							<figure>
+								<span class="image fit"><img src="images/nebula/Olympus Mons.PNG" alt="" /><figcaption>Base of Olympus Mons.</figcaption></span>
+							</figure>
+							<h2 class="major">Planetary-Scale Environments</h2>
+							<p>
+								While the task of representing and rendering planetary-scale environments may be tricky in most modern, commercially-available game engines,
+								the Nebula engine was designed to do exactly this.
+							<p>
+								One of the most notable aspects of the engine is the use of a double precision coordinate system for world entities which is necessary to represent
+								planetary-scale environments. Most game engines use single precision floats for coordinates which only has reasonable precision up to a few kilometers
+								(at a  1 unit = 1 meter scale), beyond that range noticebale artifacts begin to appear such as jittering geometry vertices and physics errors; on a planetary
+								scale, the quantization interval of coordinates becomes too large to represent the geometry of small objects such as a human. In order to get around this
+								one could implement a floating origin - i.e. resetting the coordinates of the game world such that the camera/player is always close to the origin - however
+								this ultimately involves explicitly maintaining two sets of coordinates, "true world" coordinates in double precision and "game world" coordinates in single precision,
+								for each world entity which becomes cumbersome. A cleaner solution that is not available in most existing game engines is to double precision coordinates
+								directly which Nebula implements. Of course doubles are generally slower on the CPU and much slower on the GPU so vector calculations with doubles
+								are minimized as much as possible by using single precision relative coordinates. Rendering is done by computing the relative coordinates of world
+								entities to the camera (to a similar effect as floating origin) every frame which is a simple vec3d difference then proceeding normally for the calculation of
+								model matrices, etc.
+							<p>
+								In order to render planetary-scale environments in a single camera frustum, the near and far planes of the main camera must have a huge range
+								with the near plane being a few centimeters away and the far plane being ~100k km away. If not accounted for this depth range will cause
+								Z-testing to fail to due a lack of precision, however, by using either logarithmic depth or reversed-Z this problem can be alleviated. Initially
+								I had implemented logarithmic depth but ultimately found reversed-Z to be a simpler and equally effective solution.
+							</p>
+							<h2 class="major">Procedural Space Sim</h2>
+							<figure>
+								<span class="image fit"><img src="images/nebula/Procedural.PNG" alt="" /><figcaption>Eroded craters on a procedural world.</figcaption></span>
+							</figure>
+							<p>
+								On top of the engine I am building a space simulator that will eventually allow the user to explore a 1:1 procedural, virtual Milky Way similar to SpaceEngine.
+								Currently I have implemented a procedural planet system that can use a mix of real and procedural heightmaps to render the major planets of the solar system or
+								entirely procedural worlds.
+							<p>
+								Currently the space sim features the solar system + the ~100k real-world stars listed in the Hipparcos Star catalog and allows the user to search stars from the catalog
+								via either its HIP id, HD number or Bayer designation or and warp to them.
+							<p>
+								In an effort to generate more physically plausible results than the common methods of using procedural noise
+								I implemented an algorithm for simulating hydraulic and thermal erosion on infinite terrain in realtime via the GPU
+								(will be showcased in a separate project - coming soon!) that can generate somewhat realistic mountains/erosion effects on procedural worlds by
+								taking advantage of the fractal nature of the quadtree-LOD system.
+							<p>
+								Additionally I implemented a planetary system generation algorithm that incorporates some astrophysical principles to generate plausible results.
+								A general overview of the algorithm is as follows:
+								<ol>
+									<li>
+										calculate the amount of mass in the parent star's protoplanetary disk, 98% of this will be gas the rest will be dust or ice (that can accrete into solid cores),
+										this will act as a "mass budget" for generating new planets
+									</li>
+									<li>
+										sampling from an exponentional distribution, calculate the semi-major axis (SMA) of a new planet core from the parent star (cores are more likely to form closer to the star)
+									</li>
+									<li>
+										randomly calculate the mass of the core depending on whether or not it is within the parent star's frost line (cores will tend to be more massive beyond the frost
+										line as they can accrete rock and ice) and subtract this from the mass budget
+									</li>
+									<li>
+										if the core mass is greater than 10 Earth masses we assume the core can accrete hydrogen gas in the protoplanetary disk and may become a gas or ice giant,
+										we calculate its new mass based on the core mass and the density of gas in the disk at its SMA
+									</li>
+									<li>
+										once the mass budget is depleted and planet generation is finished, some planets may be within each others' hill radii, we assume these planets will collide and merge them
+									</li>
+									<li>
+										for each planet:
+										<ol type="i">
+											<li>
+												calculate additional intrinsic parameters such as density, surface gravity, etc.
+											</li>
+											<li>
+												estimate the core cooling time for rocky planets (this determines how long the planet will be geologically active which affects both terrain formation and atmospheric composition/density due to outgassing)
+											</li>
+											<li>
+												estimate the atmospheric conditions (i.e. density and temperatue) of the planet's early atmosphere
+											</li>
+											<li>
+												extrapolate from early conditions (e.g. would liquid oceans have frozen or evapored, could life have developed and survived?) to current atmospheric conditions - planets
+												within the parent star's habitable zone may become Venus-like and planets seemingly outside the habitable zone may be able to support liquid water due to dense, warm atmospheres
+											</li>
+											<li>
+												generate planetary terrain and atmosphere model for rendering
+											</li>
+										</ol>
+									</li>
+								</ol>
+
+								While this algorithm does not account for many phenoma such as planetary migration or the effect of orbital resonances, etc. it is capable of some plausible results and
+								of recreating some of the types of worlds observable in our solar system and among expolanets in other star systems including temperate Earth-like worlds, hot jupiters and super-Earths.
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; 2023 by Jordan Walker. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
