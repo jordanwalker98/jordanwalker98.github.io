@@ -43,7 +43,7 @@
 								still a work in progress. Most modern graphics/game engine techniques are implemented in this project such as deferred shading,
 								physically based shading, compute shaders (GPGPU), realtime raytracing, and a framerate-independent game loop. The engine supports various quality-of-life features
 								such as automatic shader compilation (HLSL->SPIR-V) and hot-reloading of shaders. On top of the core engine I have implemented a space-sim
-								that allows the user to explore the major planets of the solar-system at 1:1 scale which I initially created in the Unity engine and have
+								that allows the user to explore the major planets of the solar system at 1:1 scale which I initially created in the Unity engine and have
 								been gradually porting over.
 							<p>
 								There is a lot to discuss in relation to this project so more content, including screenshots, will be coming soon!
@@ -104,7 +104,12 @@
 								Currently the space sim features the solar system + the ~100k real-world stars listed in the Hipparcos Star catalog and allows the user to search stars from the catalog
 								via either its HIP id, HD number or Bayer designation or and warp to them.
 							<p>
-								In an effort to generate more physically plausible results than the common methods of using procedural noise
+								Planets with solid surfaces are rendered as quadtrilateral cube-spheres with quadtree-LOD which is a fairly standard approach. All planetary textures and vertices are generated at runtime on the GPU
+								via compute shaders either entirely procedurally or by mixing real-world heightmaps with procedural noise for finer detail and are stored in texture arrays. Currently these
+								textures are uncompressed and take up a substantial amount of VRAM and I will be porting over texture compression system I initially wrote for a procedural virtual texturing system
+								(will be showcased in a separate project - coming soon!) in Unity to reduce memory consumption.
+<p>
+								In an effort to generate more physically plausible terrain than the common methods of using procedural noise
 								I implemented an algorithm for simulating hydraulic and thermal erosion on infinite terrain in realtime via the GPU
 								(will be showcased in a separate project - coming soon!) that can generate somewhat realistic mountains/erosion effects on procedural worlds by
 								taking advantage of the fractal nature of the quadtree-LOD system.
