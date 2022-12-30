@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Generic - Hyperspace by HTML5 UP</title>
+		<title>Projects - Hybrid Deferred Shading</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
@@ -33,7 +33,7 @@
 						<div class="inner">
 							<h1 class="major">Hybrid Deferred Shading</h1>
 							<figure>
-								<span class="image fit"><img src="../images/HybridPipelineScreenshot.PNG" alt="" /><figcaption>Scene entirely lit by emissive materials.</figcaption></span>
+								<span class="image fit"><img src="images/pipeline/thumbnail.PNG" alt="" /><figcaption>Scene entirely lit by emissive materials.</figcaption></span>
 							</figure>
 							<h2 class="major">Overview</h2>
 							<p>
@@ -41,9 +41,13 @@
 								accelerated raytracing to render shadows and global illumination using some novel methods and is suitable for
 								realtime applications such as video games. A key design goal was to have a unified code path for lighting
 								both the primary view and raytraced G-buffers for maximum consistency in results. This was my final project for a
-								real-time graphics course (CS248B) at Stanford.
+								real-time graphics course (CS248).
 							</p>
-							<h2 class="major">Background</h2>
+							<p align="center">
+								<iframe width="1120" height="630" src="https://www.youtube.com/embed/TXqKqrPcdZQ" title="YouTube video player" frameborder="0"
+										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								<h2 class="major">Background</h2>
+							</p>
 							<p>
 								A hybrid rendering pipeline is one that utilizes both rasterization and raytracing shaders to render geometry or various effects.
 								While rasterization is optimized for and capable of rendering geometry from the point of view of a perspective camera
@@ -188,14 +192,30 @@
 								While the diffuse GI system described above does capture some large scale ambient occlusion, I additionally trace AO rays at 2spp for the primary view only to capture smaller scale occlusion and
 								blur the result using the same gaussian blur as for shadows (again overblurring).
 							</p>
+							<figure>
+								<span class="image fit">
+									<img src="images/pipeline/planes.png" alt="" />
+									<figcaption>
+										Light bouncing from redd plane on bottom ont white plane on top, demonstrating diffuse GI.
+									</figcaption>
+								</span>
+							</figure>
 							<h2 class="major">Physically Based Shading</h2>
 							<p>
 								I use Unity’s builtin physically-based BRDF and copied this into my implementation (I couldn’t directly use the builtin code because it was not compatible with raytracing shaders).
 								This BRDF is based on Disney’s diffuse model and the GGX Cook-Torrance specular model.
 							</p>
+							<figure>
+								<span class="image fit">
+									<img src="images/pipeline/atmosphere.PNG" alt="" />
+									<figcaption>
+										View at sunset.
+									</figcaption>
+								</span>
+							</figure>
 							<h2 class="major">Sky Rendering</h2>
 							<p>
-								The sky rendering implementation is entirely based on Eric Bruneton’s precomputed atmospheric scattering work [1]. The sky is rendered in a unified way for both the main camera view and for raytraced specular
+								The sky rendering implementation is entirely based on Eric Bruneton’s precomputed atmospheric scattering work. The sky is rendered in a unified way for both the main camera view and for raytraced specular
 								and diffuse reflections inside of the deferred lighting raytracing shader.
 							</p>
 						</div>

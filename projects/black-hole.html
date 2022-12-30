@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Projects - Black Hole Rendering</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="../index.html" class="title">Jordan Walker</a>
+				<nav>
+					<ul>
+						<li><a href="../index.html">Home</a></li>
+						<li><a href="../index.html #one" class="active">Projects</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">Black Hole Rendering</h1>
+							<figure>
+								<span class="image fit"><img src="images/blackhole/Final.PNG" alt="" /><figcaption>Final rendered image.</figcaption></span>
+							</figure>
+							<h2 class="major">Overview</h2>
+							<p>
+								The goal of this project was to create an image that closely resembles a shot from the 2014 film <em>Interstellar</em> of a supermassive black hole,
+								accretion disk and small planet in the foreground. I figured that this would be an interesting challenge since I had never attempted implementing
+								a warped rendering algorithm and had to experiment with different ways of modeling a reasonably realistic accretion disk. My final result was obtained
+								by rendering a 4K image of the black hole, accretion disk and nearby planet at 1spp and downsampling it to 1080p which took ~700ms.
+							<figure>
+								<span class="image fit"><img src="https://static.wikia.nocookie.net/interstellarfilm/images/9/9b/Black_hole.png/revision/latest?cb=20150322005003" 
+															 alt="" /><figcaption>Shot of Gargantua from <em>Interstellar</em> (2014).</figcaption></span>
+							</figure>
+							<h2 class="major">Gravitational Lensing</h2>
+							<p>
+								I implemented gravitational lensing using a simple algorithm that raymarches along a geodesic path created by the black hole for 1k iterations from
+								the camera, effectively integrating the path of a particle. I found the article, <a href="http://rantonels.github.io/starless"> “Writing a Black Hole Raytracer” [1]</a>, to be a helpful reference
+								for this part of the project. From the beginning it seemed to me that simple Euler integration would be sufficient although the author of  <a href="http://rantonels.github.io/starless">[1]</a>
+								recommended using an RK4 integrator. The renderer uses realtime raytracing to cast rays between the raymarching intervals to check for intersections with
+								geometry such as the accretion disk.
+							<figure>
+								<span class="image fit"><img src="images/blackhole/NoLensing.PNG" alt="" /><figcaption>Same view as final image but w/out gravitational lensing effect.</figcaption></span>
+							</figure>
+							<h2 class="major">Accretion Disk</h2>
+							<p>
+								The other major component of the image was the accretion disk which turned out to be the more time-consuming element to fine tune in terms of
+								modeling both its density distribution and emission. To simplify ray interactions I modeled the accretion disk as a flat annulus from the
+								perspective of the ray-tracing intersection shader but raymarch 64 steps into a thin 3D heterogenous volume from the perspective of the hit shader.
+								I used an ad-hoc formula to calculate emission throughout the disk and Beer-Lambert to calculate attenuation. Density was calculated by a combination
+								of 16 octaves of value noise using radial coordinates as inputs and 16 octaves using cartesian coordinates as inputs and some other falloffs.
+								Emission was calculated as two falloffs multiplied by density.
+							</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; 2023 by Jordan Walker. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
