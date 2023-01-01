@@ -56,7 +56,7 @@
 								lighting.
 							</p>
 							<p>
-								Deferred shading is a technique that decouples the rendering of geometry, the results of which are stored in a geometry buffer
+								Deferred shading is a technique that decouples the rendering of geometry from shading, the results of which are stored in a geometry buffer
 								or G-buffer from lighting, with the latter being done afterwards in a separate render pass. The main advantange of this is that
 								lights in the scene only have to be evaluated for the pixels that it will actually affect which is achieved by additional
 								techniques such as tiled lighting or clustered lighting that cull lights either in screen or frustum space, respectively.

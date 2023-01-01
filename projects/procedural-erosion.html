@@ -106,8 +106,8 @@
 								While the algorithm is simple in concept, the implementation was somewhat tricky as doing this on the GPU has to be done carefully to avoid race
 								conditions and other issues that would lead to non-deterministic results. I adapted Sebastian Lague's code
 								<a href="https://github.com/SebLague/Hydraulic-Erosion">here</a> for a simple droplet-based hydraulic erosion simulation on the GPU and
-								noticed that it yields non-deterministic results as it simulates each droplet's entire lifetime as it makes changes
-								to the heightmap in parallel - clearly this results in a race condition as droplets literally race across and carve the terrain in a highly non-deterministic
+								noticed that it yields non-deterministic results as it simulates each droplet's entire lifetime, as it makes changes
+								to the heightmap, in parallel - clearly this results in a race condition as droplets literally race across and carve the terrain in a highly non-deterministic
 								way. Alleviating this race condition requires modifying the algorithm in a few ways: we must track the droplets
 								across multiple compute disptaches, we have to update the droplets
 								simultaneously at each step, we have to defer making changes to the heightmap until every droplet has been updated and we
