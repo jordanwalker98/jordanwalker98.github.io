@@ -54,8 +54,8 @@
 							<h2 class="major">Graphics</h2>
 							<p>
 								The Nebula Engine uses the Vulkan API enabling realtime raytracing that will be an essential part of the rendering pipeline. Currently the engine supports
-								deferred shading, physically based shading, atmospheric scattering, compute shaders, and raytraced shadows. Having prior experience developing graphics pipelines, 
-								I found the graphics implementation to be fairly straightforward after creating the proper abstractions of Vulkan features/objects; 
+								deferred shading, physically based shading, atmospheric scattering, compute shaders, and raytraced shadows. Having prior experience developing graphics pipelines,
+								I found the graphics implementation to be fairly straightforward after creating the proper abstractions of Vulkan features/objects;
 								however creating these proper abstractions
 								took some time to get right since I developed most of this part of the engine when Vulkan tutorials/resources were more sparse (2018) than they are today.
 							<p>
@@ -66,7 +66,7 @@
 								<a href="https://github.com/microsoft/DirectXShaderCompiler">DXC</a> for parsing and reflection with manual handling of #include. This setup is much more
 								stable and convenient and supports hot-reloading which is almost a necessity when working on procedural generation shaders that will be tweaked constantly.
 							<p>
-								As the engine supports realtime raytracing (currently only used for shadows) I decided not to implement raster-based techniques such as cascaded shadow maps, 
+								As the engine supports realtime raytracing (currently only used for shadows) I decided not to implement raster-based techniques such as cascaded shadow maps,
 								SSR or SSAO and plan to entirely rely on raytracing for these effects as it is better suited to planetary-scale environments.
 							</p>
 							<figure>
@@ -86,19 +86,23 @@
 								this ultimately involves explicitly maintaining two sets of coordinates: "true world" coordinates in double precision and "game world" coordinates in single precision,
 								for each transform. This approach can become cumbersome and uses more memory than the cleaner solution, that is not available in most existing game engines, of
 								directly using doubles. Of course doubles are generally slower on the CPU and much slower on the GPU so vector calculations with doubles
-								are minimized as much as possible by using relative coordinates in single precision as much as possible. For instance, rendering is done by computing the relative coordinates 
+								are minimized as much as possible by using relative coordinates in single precision as much as possible. For instance, rendering is done by computing the relative coordinates
 								of transforms to the camera (to a similar effect as floating origin) every frame (a simple vec3d difference) then proceeding normally for the calculation of
 								model matrices, etc., therefore there is a minimal performance overhead of doing this.
+							</p>
+							<figure>
+								<span class="image fit"><img src="images/nebula/Uranus.PNG" alt="" /><figcaption>Uranus from high orbit.</figcaption></span>
+							</figure>
 							<p>
 								Another technical detail is that in order to render planetary-scale environments in a single camera frustum the near and far planes of the main camera must have a huge range
 								with the near plane being a few centimeters away and the far plane being ~100k km away from the camera. If not accounted for this depth range will cause
 								Z-testing to fail to due a lack of precision, however, by using either logarithmic depth or reversed-Z this problem can be alleviated. Initially
 								I implemented logarithmic depth but ultimately found reversed-Z to be a simpler and equally effective solution.
 							</p>
-							<h2 class="major">Procedural Space Sim</h2>
 							<figure>
 								<span class="image fit"><img src="images/nebula/Procedural.PNG" alt="" /><figcaption>Eroded craters on a procedural world.</figcaption></span>
 							</figure>
+							<h2 class="major">Procedural Space Sim</h2>
 							<p>
 								On top of the engine I am building a space simulator that will eventually allow the user to explore a 1:1 procedural, virtual Milky Way that will be similar to
 								Cosmographic Software's <a href="https://spaceengine.org/">Space Engine</a>.
@@ -120,32 +124,32 @@
 								<a href="procedural-erosion.html">algorithm for simulating hydraulic and thermal erosion on infinite terrain in realtime via the GPU </a>
 								that can generate somewhat realistic mountains and multi-scale erosion effects on procedural worlds by
 								taking advantage of the fractal nature of the quadtree-LOD system.
-							<figure>
-								<span class="image fit"><img src="images/nebula/Procedural.PNG" alt="" /><figcaption>Eroded craters on a procedural world.</figcaption></span>
-							</figure>
+								<figure>
+									<span class="image fit"><img src="images/nebula/Saturn.PNG" alt="" /><figcaption>Saturn from medium orbit.</figcaption></span>
+								</figure>
 							<p>
-								Additionally I implemented a planetary system generation algorithm that incorporates some astrophysical principles to generate plausible 
-								systems of planets (generation of moons hasn't been implemented yet but will follow a similar pattern).
+								Additionally I created a planetary system generation algorithm that incorporates some astrophysical principles to generate plausible
+								results (generation of moons hasn't been implemented yet but will follow a similar pattern).
 								A general overview of the algorithm is as follows:
 								<ol>
 									<li>
-										calculate the total mass of the parent star's protoplanetary disk, 98% of this will be gas the rest will be dust or ice (that can accrete into solid cores),
+										calculate the total mass of the parent star's protoplanetary disk, 98% of this will be gas, the rest will be dust or ice (that can accrete into solid cores),
 										this will act as a "mass budget" for generating new planets
 									</li>
 									<li>
 										sampling from an exponentional distribution, calculate the semi-major axis (SMA) of a new planet core from the parent star (cores are more likely to form closer to the star)
 									</li>
 									<li>
-										randomly calculate the mass of the core from a mass range that depends on whether or not the core is within the parent star's frost line 
+										randomly calculate the mass of the core from a mass range that depends on whether or not the core is within the parent star's frost line
 										(cores will tend to be more massive beyond the frost
-										line as they can accrete rock and ice) and subtract this from the mass budget
+										line as they can accrete both rock and ice instead of just rock) and subtract this from the mass budget
 									</li>
 									<li>
-										if the core mass is greater than 10 Earth masses we assume the core can accrete hydrogen gas in the protoplanetary disk and may become a gas or ice giant,
+										if the core mass is greater than 10 Earth masses we assume the core can accrete hydrogen gas in the protoplanetary disk in order to become a gas or ice giant,
 										we calculate its new mass based on the core mass and the density of gas in the disk at its SMA
 									</li>
 									<li>
-										once the mass budget is depleted and planet generation is finished, some planets may be within each others' <a href="https://en.wikipedia.org/wiki/Hill_sphere">Hill spheres</a>, 
+										once the mass budget is depleted and planet generation is finished, some planets may be within each others' <a href="https://en.wikipedia.org/wiki/Hill_sphere">Hill spheres</a>,
 										we assume these planets will collide and merge them
 									</li>
 									<li>
@@ -155,17 +159,17 @@
 												calculate/generate additional intrinsic parameters such as density, surface gravity, etc.
 											</li>
 											<li>
-												estimate the core cooling time for rocky planets (this determines how long the planet will be geologically active which affects both terrain formation 
+												estimate the core cooling time for rocky planets (this determines how long the planet will be geologically active which affects both terrain formation
 												and atmospheric composition/density from outgassing)
 											</li>
 											<li>
 												estimate the atmospheric conditions (i.e. density and temperatue) of the planet's early atmosphere, shortly after formation
 											</li>
 											<li>
-												extrapolate from early conditions to current atmospheric conditions based on various factors 
+												extrapolate from early conditions to current atmospheric conditions based on various factors
 												3(e.g. would liquid oceans have frozen or evapored, could life have developed and survived?) - planets
-												within the parent star's habitable zone may become unhabitable due to greenhouse effects (e.g. Venus) and 
-												planets seemingly outside the habitable zone 
+												within the parent star's habitable zone may become unhabitable due to greenhouse effects (e.g. Venus) and
+												planets seemingly outside the habitable zone
 												may be able to support liquid water and life due for the same reason
 											</li>
 											<li>
