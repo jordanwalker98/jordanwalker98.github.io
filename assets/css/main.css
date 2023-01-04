@@ -3847,6 +3847,11 @@ input, select, textarea {
 					line-height: inherit;
 				}
 
+				#sidebar h2 {
+					text-align: center;
+					margin: 0.25em 2em 0 0;
+				}
+
 				#sidebar nav {
 					height: inherit;
 					line-height: inherit;
@@ -3878,7 +3883,7 @@ input, select, textarea {
 
 						#sidebar nav a:after {
 							background-image: none;
-							background-color: #b74e91;
+							background-color: #E54B1D;
 						}
 
 		}
