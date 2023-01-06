@@ -82,7 +82,7 @@
 								in the erosion simulation - and it turns out this works and is exactly what I implemented. However, I first investigated alternative methods of generating eroded terrain
 								including an <a href="https://www.shadertoy.com/view/MtGcWh">interesting "erosion noise" function</a>,
 								<a href="https://github.com/dandrino/terrain-erosion-3-ways">a river network algorithm and ML methods such as CNNs or GANs</a>
-								to either " erode" an input
+								to either "erode" an input
 								terrain or directly generate an eroded terrain, respectively, and ultimately found that
 								these methods would be some combination of not sufficiently realistic, too computationally expensive for real-time terrain generation or
 								not clearly applicable to infinite terrain.
@@ -102,7 +102,7 @@
 								want to ideally keep the erosion range as small as possible to keep the unused parts of these heightmaps as small as possible, thus causing the erosion
 								features to be limited in scale; by leveraging the fact that most terrain systems use a quadtree-LOD we can generate mutli-scale erosion features
 								for free by simply reusing a patch's parent heightmap as the input for the next depth level of terrain patches - this is necessary for
-								use on planetary-scaleterrain (this is not implemented in the Unity project).
+								use on planetary-scale terrain (this is not implemented in the Unity project).
 							<p>
 								While the algorithm is simple in concept, the implementation was somewhat tricky as doing this on the GPU has to be done carefully to avoid race
 								conditions and other issues that would lead to non-deterministic results. I adapted Sebastian Lague's code
